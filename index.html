@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+    <head>
+        <title>MR</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap" 
+              rel="stylesheet">
+        <link rel="stylesheet" 
+                href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    <body ng-controller="MyC">
+        <h1 class="animated jackInTheBox">Music Recommendor</h1>
+        <h3>This Website has been created using AngularJS on front end and Flask on the Back End.
+            I trained my model using K-Means clustering song data of more than 10000 Spotifty tracks.
+        I created 10 clusters and a member of each cluster is present in the drop-down given below.
+    Select the song that you like the most out of the given options and you'll get a list 10 songs, 
+    similar to your choice!!</h3>
+            <fieldset>
+            <legend>Input Area</legend>
+            <!-- <input list="browsers"> -->
+            <label for="songs">Songs:</label>
+                <select id="songs" ng-model="song.value" name="spotifty">
+                  <option value="Belong To U">Belong To U</option>
+                  <option value="Better in Time">Better In Time</option>
+                  <option value="Bring Me To Life">Bring Me To Life</option>
+                  <option value="Dancing in the Dark">Dancing In The Dark</option>                 
+                  <option value="In The End">In The End</option>
+                  <option value="Love The Way You Lie">Love The Way You Lie</option>
+                  <option value="Proud Mary">Proud Mary</option>
+                  <option value="Purple Rain">Purple Rain</option>
+                  <option value="Rock You Like a Hurricane">Rock You Like A Hurricane</option>
+                  <option value="White Boi">White Boi</option>
+                  
+                </select> 
+                <br>
+                <button type="button" 
+                        class="btn btn-primary" 
+                        ng-click="view()">View Songs</button>
+            </fieldset>
+            <span>
+            <img src="https://loading.io/spinners/pacman/lg.eat-bean-pie-loading-gif.gif" 
+                height=75 width=75 ng-show="loading">
+            </span>
+            <br>
+            <ul>
+                <p>Recommended Songs:</p>
+                <li ng-repeat="music in song.mlist">
+                    {{music}}
+                </li>
+            </ul>
+            
+            <script>
+                var MyApp=angular.module("MyApp",[]).controller("MyC",
+                function($scope,$http){
+                    $scope.loading=false;
+                    $scope.song={
+                        value:"Belong To U",
+                        mlist:null
+                    };
+                    $scope.view=function(){
+                        $scope.IsVisible = $scope.IsVisible ? false : true;
+                       $http.post("http://localhost:5004/song",JSON.stringify($scope.song))
+                       .then(
+                       function(response){
+                            $scope.song.mlist=response.data.mlist;
+                            console.log($scope.song.mlist);
+                       },
+                       function(response){console.log(response)}
+                       ).finally(
+                        // $scope.IsVisible = $scope.IsVisible ? true : false
+                       )};
+                    
+                });
+            </script>
+    </body>
+</html>
